@@ -1,7 +1,22 @@
+{- |
+Module       : Control.Monad.Random.Extras
+Copyright    : 2010 Aristid Breitkreuz
+License      : BSD3
+Stability    : experimental
+Portability  : portable
+
+Additional monadic random functions, based on 'MonadRandom'.
+
+-}
+
+
 module Control.Monad.Random.Extras
 (
+  -- * Random functions
+  -- ** Shuffling
   shuffle
 , shuffle'
+  -- ** Choice
 , choice
 )
 where
@@ -19,7 +34,7 @@ extract s i | Seq.null r = Nothing
         (b :< c) = Seq.viewl r
 
 -- | Shuffle a list randomly. The method is based on Oleg Kiselyov's 
--- "perfect shuffle" <http://okmij.org/ftp/Haskell/perfect-shuffle.txt>,
+-- /perfect shuffle/ <http://okmij.org/ftp/Haskell/perfect-shuffle.txt>,
 -- but much simpler because it uses existing data structures. The efficiency
 -- of both methods should be comparable.
 shuffle :: (MonadRandom m) => [a] -> m [a]
@@ -32,7 +47,8 @@ shuffle' = unfoldrM step
     where step s = extract s `liftM` getRandomR range
               where range = (0, max (Seq.length s - 1) 0)
 
--- | Select a random element from a list. Complexity: O(n).
+-- | Select a random element from a list.
+-- Complexity: O(n).
 choice :: (MonadRandom m) => [a] -> m a
 choice [] = error "Control.Monad.Random.Extras.choice: empty list"
 choice xs = (xs !!) `liftM` getRandomR (0, length xs - 1)

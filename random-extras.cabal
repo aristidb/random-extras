@@ -10,10 +10,10 @@ Name:                random-extras
 Version:             0.1
 
 -- A short (one-line) description of the package.
-Synopsis:            Additional functions for random values, based on MonadRandom
+Synopsis:            Additional functions for random values.
 
 -- A longer description of the package.
--- Description:         
+Description:         Additional functions for random values, based on MonadRandom. Inspired by random-shuffle.
 
 -- The license under which the package is released.
 License:             BSD3

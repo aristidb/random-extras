@@ -25,17 +25,22 @@ module Control.Monad.Random.Extras
 , choice
 , choiceSeq
 , choiceArray
+  -- ** Choices
+, choices
+, choicesArray
 )
 where
 
 import Control.Monad (liftM)
-import Control.Monad.Random (MonadRandom, getRandomR)
+import Control.Monad.Random (MonadRandom, getRandomR, getRandomRs)
 import System.Random (Random)
 import Data.List (mapAccumL)
 import Data.Maybe (fromJust)
 import qualified Data.Sequence as Seq
-import qualified Data.Array.IArray as Arr
 import Data.Sequence ((><), ViewL((:<)))
+import qualified Data.Array.IArray as Arr
+import qualified Data.Array
+import Data.Array.IArray ((!))
 
 (.:) :: (c -> c') -> (a -> b -> c) -> (a -> b -> c')
 (.:) = (.).(.)
@@ -130,4 +135,18 @@ choiceSeq s | Seq.null s = error "Control.Monad.Random.Extras.choiceSeq: empty s
 --
 -- Complexity: O(1).
 choiceArray :: (MonadRandom m, Arr.IArray arr a, Arr.Ix i, Random i) => arr i a -> m a
-choiceArray v = (Arr.!) v `liftM` getRandomR (Arr.bounds v)
+choiceArray v = (v !) `liftM` getRandomR (Arr.bounds v)
+
+-- Choices
+
+-- | Select /m/ random elements from a list.
+--
+-- Complexity: O(m)
+choices :: (MonadRandom m) => Int -> [a] -> m [a]
+choices m xs = choicesArray m (Data.Array.listArray (1, length xs) xs)
+
+-- | Select /m/ random elements from an array.
+--
+-- Complexity: O(m)
+choicesArray :: (MonadRandom m, Arr.IArray arr a, Arr.Ix i, Random i) => Int -> arr i a -> m [a]
+choicesArray m v = map (v !) `liftM` take m `liftM` getRandomRs (Arr.bounds v)

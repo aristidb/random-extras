@@ -27,8 +27,7 @@ module Control.Monad.Random.Extras
 )
 where
 
-import Control.Monad (MonadPlus, liftM)
-import Control.Monad.Loops (unfoldrM')
+import Control.Monad (liftM)
 import Control.Monad.Random (MonadRandom, getRandomR)
 import System.Random (Random)
 import Data.List (mapAccumL)

@@ -30,6 +30,7 @@ where
 import Control.Monad (MonadPlus, liftM)
 import Control.Monad.Loops (unfoldrM')
 import Control.Monad.Random (MonadRandom, getRandomR)
+import System.Random (Random)
 import Data.List (mapAccumL)
 import Data.Maybe (fromJust)
 import qualified Data.Sequence as Seq
@@ -49,6 +50,15 @@ extractSeq s i | Seq.null r = Nothing
                | otherwise  = Just (a >< c, b)
     where (a, r) = Seq.splitAt i s 
           (b :< c) = Seq.viewl r
+
+getRandomR' :: (MonadRandom m, Random a) => a -> a -> m a
+getRandomR' = curry getRandomR
+
+getRandomRNums :: (MonadRandom m, Random a, Num a) => [a] -> m [a]
+getRandomRNums = mapM (getRandomR' 0)
+
+backsaw :: Int -> [Int]
+backsaw n = [n - 1, n - 2 .. 0]
           
 -- Shuffling
 
@@ -67,10 +77,10 @@ shuffle = shuffleSeq . Seq.fromList
 -- Complexity: O(n * log n)
 shuffleSeq :: (MonadRandom m) => Seq.Seq a -> m [a]
 shuffleSeq s = do
-  let len = Seq.length s
-  samples <- mapM (\n -> getRandomR (0, n)) [len - 1, len - 2 .. 0]
+  samples <- getRandomRNums . backsaw $ Seq.length s
   return (shuffleSeq' s samples)
-  
+
+shuffleSeq' :: Seq.Seq a -> [Int] -> [a]
 shuffleSeq' = snd .: mapAccumL (fromJust .: extractSeq)
 
 -- Sampling
@@ -82,8 +92,7 @@ sample n = sampleSeq n . Seq.fromList
 -- | Take a random sample from a sequence.
 sampleSeq :: (MonadRandom m) => Int -> Seq.Seq a -> m [a]
 sampleSeq n s = do
-  let len = Seq.length s
-  samples <- mapM (\n -> getRandomR (0, n)) (take n [len - 1, len - 2 .. 0])
+  samples <- getRandomRNums . take n . backsaw $ Seq.length s
   return (shuffleSeq' s samples)
 
 -- Choice

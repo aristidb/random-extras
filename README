@@ -2,3 +2,5 @@ Random-extras 0.1
 -----------------
 
 This package contains additional monadic functions for random values.
+
+It is licensed under BSD3 (see LICENSE).

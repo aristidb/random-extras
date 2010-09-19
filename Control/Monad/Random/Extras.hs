@@ -24,6 +24,7 @@ module Control.Monad.Random.Extras
 , choiceExtractSeq
 , choice
 , choiceSeq
+, choiceArray
 )
 where
 
@@ -33,6 +34,7 @@ import System.Random (Random)
 import Data.List (mapAccumL)
 import Data.Maybe (fromJust)
 import qualified Data.Sequence as Seq
+import qualified Data.Array.IArray as Arr
 import Data.Sequence ((><), ViewL((:<)))
 
 (.:) :: (c -> c') -> (a -> b -> c) -> (a -> b -> c')
@@ -123,3 +125,9 @@ choice xs = (xs !!) `liftM` getRandomR (0, length xs - 1)
 choiceSeq :: (MonadRandom m) => Seq.Seq a -> m a
 choiceSeq s | Seq.null s = error "Control.Monad.Random.Extras.choiceSeq: empty sequence"
             | otherwise  = Seq.index s `liftM` getRandomR (0, Seq.length s - 1)
+
+-- | Select a random element from an array.
+--
+-- Complexity: O(1).
+choiceArray :: (MonadRandom m, Arr.IArray arr a, Arr.Ix i, Random i) => arr i a -> m a
+choiceArray v = (Arr.!) v `liftM` getRandomR (Arr.bounds v)

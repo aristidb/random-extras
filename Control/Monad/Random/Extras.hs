@@ -16,6 +16,9 @@ module Control.Monad.Random.Extras
   -- ** Shuffling
   shuffle
 , shuffleSeq
+  -- ** Sampling
+, sample
+, sampleSeq
   -- ** Choice
 , choiceExtract
 , choiceExtractSeq
@@ -41,6 +44,8 @@ extractSeq s i | Seq.null r = Nothing
                | otherwise  = Just (b, a >< c)
     where (a, r) = Seq.splitAt i s 
           (b :< c) = Seq.viewl r
+          
+-- Shuffling
 
 -- | Shuffle a list randomly. The method is based on Oleg Kiselyov's 
 -- /perfect shuffle/ <http://okmij.org/ftp/Haskell/perfect-shuffle.txt>,
@@ -57,6 +62,18 @@ shuffle = shuffleSeq . Seq.fromList
 -- Complexity: O(n * log n)
 shuffleSeq :: (MonadRandom m, MonadPlus f) => Seq.Seq a -> m (f a)
 shuffleSeq = unfoldrM' choiceExtractSeq
+
+-- Sampling
+
+-- | Take a random sample from a list.
+sample :: (MonadRandom m) => Int -> [a] -> m [a]
+sample n xs = take n `liftM` shuffle xs
+
+-- | Take a random sample from a sequence.
+sampleSeq :: (MonadRandom m) => Int -> Seq.Seq a -> m [a]
+sampleSeq n s = take n `liftM` shuffleSeq s
+
+-- Choice
 
 -- | Randomly choose and extract an element from a list.
 --

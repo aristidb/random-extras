@@ -15,6 +15,9 @@ Synopsis:            Additional functions for random values.
 -- A longer description of the package.
 Description:         Additional functions for random values, based on MonadRandom. Inspired by random-shuffle.
 
+-- URL for the project homepage or repository.
+Homepage:            http://github.com/aristidb/random-extras
+
 -- The license under which the package is released.
 License:             BSD3
 

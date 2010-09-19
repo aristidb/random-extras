@@ -92,13 +92,17 @@ shuffleSeq' = snd .: mapAccumL (fromJust .: extractSeq)
 -- Sampling
 
 -- | Take a random sample from a list.
+-- 
+-- Complexity: O(n + m * log n)
 sample :: (MonadRandom m) => Int -> [a] -> m [a]
-sample n = sampleSeq n . Seq.fromList
+sample m = sampleSeq m . Seq.fromList
 
 -- | Take a random sample from a sequence.
+-- 
+-- Complexity: O(m * log n)
 sampleSeq :: (MonadRandom m) => Int -> Seq.Seq a -> m [a]
-sampleSeq n s = do
-  samples <- getRandomRNums . take n . backsaw $ Seq.length s
+sampleSeq m s = do
+  samples <- getRandomRNums . take m . backsaw $ Seq.length s
   return (shuffleSeq' s samples)
 
 -- Choice

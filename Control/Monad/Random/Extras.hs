@@ -24,6 +24,7 @@ module Control.Monad.Random.Extras
 , choiceExtractSeq
 , choice
 , safeChoice
+, iterativeChoice
 , choiceSeq
 , safeChoiceSeq
 , choiceArray
@@ -37,7 +38,7 @@ where
 import Control.Monad (liftM)
 import Control.Monad.Random (MonadRandom, getRandomR, getRandomRs)
 import System.Random (Random)
-import Data.List (mapAccumL)
+import Data.List (mapAccumL, foldl')
 import Data.Maybe (fromJust)
 import qualified Data.Sequence as Seq
 import Data.Sequence ((><), ViewL((:<)))
@@ -141,6 +142,23 @@ choice xs = (xs !!) `liftM` getRandomR (0, length xs - 1)
 safeChoice :: (MonadRandom m) => [a] -> Maybe (m a)
 safeChoice [] = Nothing
 safeChoice xs = Just $ choice xs
+
+-- | Select a random element from a list, traversing the list only once.
+-- 
+-- /Partial function:/ This function is only defined on non-empty lists
+--                     with a length below ('maxBound' + 1 :: Int).
+-- 
+-- /Complexity:/ O(n), where /n/ is the length of the input list.
+iterativeChoice :: MonadRandom m => [a] -> m a
+iterativeChoice xs = fst `liftM` foldl' stepM (return start) xs
+    where stepM x y = x >>= step y
+          step offered (old, n) = do
+            i <- getRandomR (0, n)
+            let new | i == 0    = offered
+                    | otherwise = old
+            return $! new `seq` (new, n + 1)
+          start = (err, 0 :: Int)
+          err = error "Control.Monad.Random.Extras.iterativeChoice: empty list"
 
 -- | Select a random element from a sequence.
 -- 

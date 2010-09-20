@@ -49,6 +49,7 @@ Cabal-version:       >=1.8
 Library
   -- Modules exported by the library.
   Exposed-modules:
+        Data.Random.Dovetail,
         Data.Random.Extras
   
   -- Packages needed in order to build this package.

@@ -34,7 +34,7 @@ Maintainer:          aristidb@googlemail.com
 -- A copyright notice.
 -- Copyright:           
 
-Category:            Control
+Category:            Data, Math
 
 Build-type:          Simple
 
@@ -49,7 +49,7 @@ Cabal-version:       >=1.8
 Library
   -- Modules exported by the library.
   Exposed-modules:
-        Control.Monad.Random.Extras
+        Data.Random.Extras
   
   -- Packages needed in order to build this package.
   Build-depends:

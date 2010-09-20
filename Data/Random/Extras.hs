@@ -10,7 +10,7 @@ Portability  : portable
 Additional monadic random functions, based on random-fu.
 -}
 
-module Control.Monad.Random.Extras
+module Data.Random.Extras
 (
   -- * Random functions
   -- ** Shuffling

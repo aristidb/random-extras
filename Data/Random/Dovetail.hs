@@ -117,8 +117,10 @@ dovetails n s | n > 0     = dovetail =<< dovetails (n - 1) s
 -- 
 -- /Invocation:/ @generalizedDovetails shuffles parts deck@
 generalizedDovetails :: Int -> Int -> Seq a -> RVar (Seq a)
-generalizedDovetails shuffles parts s | shuffles > 0 = generalizedDovetail parts =<< generalizedDovetails (shuffles - 1) parts s
+generalizedDovetails shuffles parts s | shuffles > 0 = step =<< next
                                       | otherwise    = return s
+    where next = generalizedDovetails (shuffles - 1) parts s
+          step = generalizedDovetail parts
 
 -- | Perform an inverse dovetail shuffle, i.e. letting the cards from 
 -- a deck drop randomly into two heaps and then stack these heaps.

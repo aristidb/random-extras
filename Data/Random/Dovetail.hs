@@ -34,6 +34,8 @@ module Data.Random.Dovetail
   -- ** Inverse dovetail shuffling
 , inverseDovetail
 , generalizedInverseDovetail
+  -- * Face up, face down shuffling
+, faceUpFaceDown
 )
 where
   
@@ -44,7 +46,7 @@ import Data.Random.Distribution.Binomial
 import Data.Random.Distribution.Uniform
 import Data.Foldable (foldr1)
 import Data.Sequence hiding (replicateM)
-import Prelude hiding (null, length, splitAt, replicate, foldr1)
+import Prelude hiding (null, length, splitAt, replicate, foldr1, reverse)
 
 -- | Split a deck into two /roughly equal/ halves.
 splitDeck :: Seq a -> RVar (Seq a, Seq a)
@@ -127,8 +129,13 @@ generalizedDovetails shuffles parts s | shuffles > 0 = step =<< next
 inverseDovetail :: Seq a -> RVar (Seq a)
 inverseDovetail s = uncurry (><) <$> inverseRiffleDecks s
 
--- | Performan a generalized inverse dovetail shuffle, i.e. letting the cards
+-- | Perform a generalized inverse dovetail shuffle, i.e. letting the cards
 -- from a deck drop randomly into /n/ heaps and then stack them back together.
 generalizedInverseDovetail :: Int -> Seq a -> RVar (Seq a)
 generalizedInverseDovetail n s | null s    = return empty
                                | otherwise = foldr1 (><) <$> generalizedInverseRiffleDecks n s
+
+-- | Perform a /face up, face down/ shuffle, which is like a dovetail shuffle
+-- where the lower of the two halves is reversed.
+faceUpFaceDown :: Seq a -> RVar (Seq a)
+faceUpFaceDown s = uncurry (riffleDecks . reverse) =<< splitDeck s

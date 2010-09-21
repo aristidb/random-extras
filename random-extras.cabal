@@ -1,7 +1,7 @@
 Name:                random-extras
 
 -- http://www.haskell.org/haskellwiki/Package_versioning_policy
-Version:             0.15
+Version:             0.16
 Synopsis:            Additional functions for random values.
 Description:         Additional functions for random values, based on random-fu. Inspired by random-shuffle.
 Homepage:            http://github.com/aristidb/random-extras

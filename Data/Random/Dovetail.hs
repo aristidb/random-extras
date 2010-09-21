@@ -46,11 +46,11 @@ import Data.Foldable (foldr1)
 import Data.Sequence hiding (replicateM)
 import Prelude hiding (null, length, splitAt, replicate, foldr1)
 
--- | Split a deck into two "roughly equal" halves.
+-- | Split a deck into two /roughly equal/ halves.
 splitDeck :: Seq a -> RVar (Seq a, Seq a)
 splitDeck s = flip splitAt s <$> binomial (length s) (0.5 :: Double)
 
--- | Split a deck into /n/ "roughly equal" parts.
+-- | Split a deck into /n/ /roughly equal/ parts.
 generalizedSplitDeck :: Int -> Seq a -> RVar [Seq a]
 generalizedSplitDeck n s = split s <$> replicateM (n - 1) bin
     where bin = binomial (length s) (1 / fromIntegral n :: Double)

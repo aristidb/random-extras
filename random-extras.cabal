@@ -17,6 +17,7 @@ Cabal-version:       >=1.8
 
 Library
   Exposed-modules:
+        Data.Random.Distribution.Uniform.Exclusive,
         Data.Random.Dovetail,
         Data.Random.Extras,
         Data.Random.Shuffle.Weighted

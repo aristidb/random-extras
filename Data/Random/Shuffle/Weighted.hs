@@ -26,9 +26,12 @@ weightedChoiceExtractCDF :: (Num w, Ord w, Distribution Uniform w) => M.Map w a 
 weightedChoiceExtractCDF m | M.null m  = moduleError "weightedChoiceExtractCDF" "empty map"
                            | otherwise = extract <$> uniform 0 wmax
     where Just ((wmax, _), _) = M.maxViewWithKey m
-          extract w = (a `M.union` c, b)
+          extract w = (a `M.union` M.mapKeysMonotonic (subtract gap) c, b)
               where (a, r) = M.split w m
-                    Just (b, c) = M.minView r
+                    Just ((k, b), c) = M.minViewWithKey r
+                    gap = case M.minViewWithKey c of
+                            Nothing -> 0
+                            Just ((k2, _), _) -> k2 - k
 
 weightedShuffleCDF :: (Num w, Ord w, Distribution Uniform w) => M.Map w a -> RVar [a]
 weightedShuffleCDF m | M.null m  = return []

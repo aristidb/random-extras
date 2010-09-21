@@ -76,11 +76,15 @@ weightedSample n = weightedSampleCDF n . cdfMapFromList
 -- | Randomly extract an element from a CDF map according to its weights. The
 -- element is removed and the resulting "weight gap" closed.
 weightedChoiceExtractCDF :: (Num w, Ord w, Distribution Uniform w) => M.Map w a -> RVar (M.Map w a, a)
-weightedChoiceExtractCDF m | M.null m  = moduleError "weightedChoiceExtractCDF" "empty map"
-                           | otherwise = extract <$> uniform 0 wmax
-    where Just ((wmax, _), _) = M.maxViewWithKey m
+weightedChoiceExtractCDF m | M.null m         = moduleError "weightedChoiceExtractCDF" "empty map"
+                           | M.null exceptMax = return (exceptMax, maxE)
+                           | otherwise        = extract <$> uniform 0 wmax
+    where Just ((wmax, maxE), exceptMax) = M.maxViewWithKey m
           extract w = (a `M.union` M.mapKeysMonotonic (subtract gap) c, b)
-              where (a, r) = M.split w m
+              where (a, e, r') = M.splitLookup w m
+                    r = case e of
+                          Nothing -> r'
+                          Just ex -> M.insert w ex r'
                     Just ((k, b), c) = M.minViewWithKey r
                     gap = case M.minViewWithKey c of
                             Nothing -> 0
@@ -88,4 +92,6 @@ weightedChoiceExtractCDF m | M.null m  = moduleError "weightedChoiceExtractCDF" 
 
 -- | Generate a CDF map from a weighted list.
 cdfMapFromList :: Num w => [(w, a)] -> M.Map w a
-cdfMapFromList = M.fromAscList . scanl1 (\(w1, _) (w2, x) -> (w1 + w2, x))
+cdfMapFromList = M.fromAscListWith (const id) 
+                 . scanl1 (\(w1, _) (w2, x) -> (w1 + w2, x)) 
+                 . dropWhile ((==0) . fst)

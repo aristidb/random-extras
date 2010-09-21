@@ -32,7 +32,7 @@ Author:              Aristid Breitkreuz
 Maintainer:          aristidb@googlemail.com
 
 -- A copyright notice.
--- Copyright:           
+Copyright:           (c) 2010 Aristid Breitkreuz
 
 Category:            Data, Math
 
@@ -40,7 +40,7 @@ Build-type:          Simple
 
 -- Extra files to be distributed with the package, such as examples or
 -- a README.
--- Extra-source-files:  
+Extra-source-files:  README
 
 -- Constraint on the version of Cabal needed to build this package.
 Cabal-version:       >=1.8

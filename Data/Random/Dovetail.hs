@@ -92,9 +92,10 @@ inverseRiffleDecks s | null s    = return (empty, empty)
 -- randomly into /n/ heaps.
 generalizedInverseRiffleDecks :: Int -> Seq a -> RVar (Seq (Seq a))
 generalizedInverseRiffleDecks n s | null s    = return $ replicate n empty
-                                  | otherwise = let (s1 :< ss) = viewl s in
-                                                liftM2 (unriffle s1) (generalizedInverseRiffleDecks n ss) (uniform 0 (n - 1))
+                                  | otherwise = liftM2 (unriffle s1) next (uniform 0 (n - 1))
     where unriffle a t i = adjust (a <|) i t
+          (s1 :< ss) = viewl s
+          next = generalizedInverseRiffleDecks n ss
 
 -- | Dovetail shuffle a deck, i.e. split the deck with splitDeck and riffle 
 -- the resulting halves with 'riffleDecks'.

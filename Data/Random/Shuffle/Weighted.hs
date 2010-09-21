@@ -18,9 +18,12 @@ import Data.Random.RVar
 import Data.Random.Distribution
 import Data.Random.Distribution.Uniform
 import qualified Data.Map as M
+
+moduleError :: String -> String -> a
+moduleError n s = error $ "Data.Random.Shuffle.Weighted." ++ n ++ ": " ++ s
   
 weightedChoiceExtractCDF :: (Num w, Ord w, Distribution Uniform w) => M.Map w a -> RVar (M.Map w a, a)
-weightedChoiceExtractCDF m | M.null m  = error "Data.Random.Shuffle.Weighted.weightedChoiceExtract: empty map"
+weightedChoiceExtractCDF m | M.null m  = moduleError "weightedChoiceExtractCDF" "empty map"
                            | otherwise = extract <$> uniform 0 wmax
     where Just ((wmax, _), _) = M.maxViewWithKey m
           extract w = (a `M.union` c, b)

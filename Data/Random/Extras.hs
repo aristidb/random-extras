@@ -47,6 +47,9 @@ import qualified Data.Array.IArray as Arr
 import qualified Data.Array
 import Data.Array.IArray ((!))
 
+moduleError :: String -> String -> a
+moduleError n s = error $ "Data.Random.Extras." ++ n ++ ": " ++ s
+
 (.:) :: (c -> c') -> (a -> b -> c) -> (a -> b -> c')
 (.:) = (.).(.)
 
@@ -128,7 +131,7 @@ choiceExtractSeq s | Seq.null s = Nothing
 -- 
 -- /Complexity:/ O(n), where /n/ is the length of the input list.
 choice :: [a] -> RVar a
-choice [] = error "Control.Monad.Random.Extras.choice: empty list"
+choice [] = moduleError "choice" "empty list"
 choice xs = (xs !!) `liftM` uniform 0 (length xs - 1)
 
 -- | Safely select a random element from a list.
@@ -153,7 +156,7 @@ iterativeChoice xs = fst `liftM` foldl' stepM (return start) xs
                     | otherwise = old
             return $! new `seq` (new, n + 1)
           start = (err, 0 :: Int)
-          err = error "Control.Monad.Random.Extras.iterativeChoice: empty list"
+          err = moduleError "iterativeChoice" "empty list"
 
 -- | Select a random element from a sequence.
 -- 
@@ -161,7 +164,7 @@ iterativeChoice xs = fst `liftM` foldl' stepM (return start) xs
 -- 
 -- /Complexity:/ O(log n), where /n/ is the length of the input sequence.
 choiceSeq :: Seq.Seq a -> RVar a
-choiceSeq s | Seq.null s = error "Control.Monad.Random.Extras.choiceSeq: empty sequence"
+choiceSeq s | Seq.null s = moduleError "choiceSeq" "empty sequence"
             | otherwise  = Seq.index s `liftM` uniform 0 (Seq.length s - 1)
                            
 -- | Safely select a random element from a sequence.
@@ -185,7 +188,7 @@ choiceArray v = (v !) `liftM` uncurry uniform (Arr.bounds v)
 -- 
 -- /Complexity:/ O(n) base and O(1) per element.
 choices :: Int -> [a] -> RVar [a]
-choices _ [] = error "Control.Monad.Random.Extras.choices: empty list"
+choices _ [] = moduleError "choices" "empty list"
 choices n xs = choicesArray n $ Data.Array.listArray (1, length xs) xs
 
 -- | Safely get a stream of random elements from a list.

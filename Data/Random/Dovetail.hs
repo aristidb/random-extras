@@ -1,7 +1,7 @@
 {-# LANGUAGE FlexibleContexts #-}
 
 {- |
-Module       : Data.Random.Extras
+Module       : Data.Random.Dovetail
 Copyright    : 2010 Aristid Breitkreuz
 License      : BSD3
 Stability    : experimental

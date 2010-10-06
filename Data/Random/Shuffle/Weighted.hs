@@ -1,7 +1,7 @@
 {-# LANGUAGE FlexibleContexts #-}
 
 {- |
-Module       : Data.Random.Extras
+Module       : Data.Random.Shuffle.Weighted
 Copyright    : 2010 Aristid Breitkreuz
 License      : BSD3
 Stability    : experimental

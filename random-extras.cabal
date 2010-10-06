@@ -20,7 +20,8 @@ Library
         Data.Random.Distribution.Uniform.Exclusive,
         Data.Random.Dovetail,
         Data.Random.Extras,
-        Data.Random.Shuffle.Weighted
+        Data.Random.Shuffle.Weighted,
+        Data.Random.Show.Unsafe
   
   Build-depends:
         base >=4 && <5,

@@ -1,5 +1,5 @@
-Random-extras 0.18
-------------------
+Random-extras 0.18.1
+--------------------
 
 This package contains additional monadic functions for random values.
 

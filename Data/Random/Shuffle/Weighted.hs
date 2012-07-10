@@ -92,7 +92,7 @@ weightedChoiceExtractCDF m | M.null m         = moduleError "weightedChoiceExtra
                             Just ((k2, _), _) -> k2 - k
 
 -- | Generate a CDF map from a weighted list.
-cdfMapFromList :: Num w => [(w, a)] -> M.Map w a
+cdfMapFromList :: (Num w, Eq w) => [(w, a)] -> M.Map w a
 cdfMapFromList = M.fromAscListWith (const id) 
                  . scanl1 (\(w1, _) (w2, x) -> (w1 + w2, x)) 
                  . dropWhile ((==0) . fst)

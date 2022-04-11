@@ -17,8 +17,8 @@ module Data.Random.Show.Unsafe
 where
 
 import Data.Random.RVar
-import Data.Random.Source.DevRandom
 import System.IO.Unsafe
+import System.Random.Stateful
 
 instance (Show a) => Show (RVar a) where
-    show rv = show . unsafePerformIO $ runRVar rv DevURandom
+    show rv = show . unsafePerformIO $ runRVar rv globalStdGen
